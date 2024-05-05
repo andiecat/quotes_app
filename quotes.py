@@ -1,5 +1,6 @@
 import psycopg2
 from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 
 def get_all_quotes():
     conn = psycopg2.connect(SQL_CONNECTION_STRING)
@@ -36,20 +37,12 @@ def get_all_quotes():
     ]
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/quotes")
 def quotes_endpoint():
-    # return jsonify(get_all_quotes())
-    webpage = ""
-    webpage += "<h1>Quotes</h1>"
-    webpage += "<ol>"
-
-    for quote in get_all_quotes():
-        webpage += f"<li>{quote['text']} <br/> by <span style=\"color: olivedrab\">{quote['name']}</span> <br/><br/></li>"
-
-    webpage += "</ol>"
-
-    return webpage
+    return jsonify(get_all_quotes())
 
 
 SQL_CONNECTION_STRING = 'postgresql://localhost:5432/andiecat'
